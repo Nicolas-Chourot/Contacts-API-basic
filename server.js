@@ -152,8 +152,15 @@ async function handleContactsServiceRequest(req, res) {
     return false;
 }
 
+async function handleBookmarkServiceRequest(req, res) {
+    // todo
+    return false;
+}
 async function handleRequest(req, res) {
-    return await handleContactsServiceRequest(req, res);
+    if (! await handleContactsServiceRequest(req, res))
+        if (! await handleBookmarkServiceRequest(req, res))
+            return false;
+    return true;
 }
 
 function getPayload(req) {
