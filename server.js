@@ -26,6 +26,19 @@ function extract_Id_From_Request(req) {
     let parts = req.url.split('/');
     return parseInt(parts[parts.length - 1]);
 }
+function getPayload(req) {
+    return new Promise(resolve => {
+        let body = [];
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            if (body.length > 0)
+                if (req.headers['content-type'] == "application/json")
+                    try { resolve(JSON.parse(body)); }
+                    catch (error) { console.log(error); }
+            resolve(null);
+        });
+    })
+}
 function validateContact(contact) {
     if (!('Name' in contact)) return 'Name is missing';
     if (!('Phone' in contact)) return 'Phone is missing';
@@ -161,20 +174,6 @@ async function handleRequest(req, res) {
         if (! await handleBookmarkServiceRequest(req, res))
             return false;
     return true;
-}
-
-function getPayload(req) {
-    return new Promise(resolve => {
-        let body = [];
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-            if (body.length > 0)
-                if (req.headers['content-type'] == "application/json")
-                    try { resolve(JSON.parse(body)); }
-                    catch (error) { console.log(error); }
-            resolve(null);
-        });
-    })
 }
 
 const server = createServer(async (req, res) => {
