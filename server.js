@@ -152,8 +152,8 @@ async function handleContactsServiceRequest(req, res) {
     return false;
 }
 
-function handleRequest(req, res) {
-    return handleContactsServiceRequest(req, res);
+async function handleRequest(req, res) {
+    return await handleContactsServiceRequest(req, res);
 }
 
 function getPayload(req) {
@@ -174,7 +174,7 @@ const server = createServer(async (req, res) => {
     console.log(req.method, req.url);
     accessControlConfig(req, res);
     if (!CORS_Preflight(req, res))
-        if (!handleRequest(req, res)) {
+        if (!await handleRequest(req, res)) {
             res.writeHead(404);
             res.end();
         }
